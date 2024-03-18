@@ -63,38 +63,36 @@
 # # Start the Tkinter event loop
 # window.mainloop()
 
-
 from flask import Flask, render_template, request
-from tkinter import scrolledtext
-from tkinter import Tk
-import tkinter as tk
 from flask_cors import CORS
 
 app = Flask(__name__)
 
-# Load dictionary and initialize Tkinter window
+# Load dictionary
 def load_dictionary(file_path):
     with open(file_path, 'r') as file:
         return [line.strip() for line in file]
 
-
+# Wagner-Fischer algorithm with dynamic programming
 def wagner_fischer(s1, s2):
     len_s1, len_s2 = len(s1), len(s2)
-    if len_s1 > len_s2:
-        s1, s2 = s2, s1
-        len_s1, len_s2 = len_s2, len_s1
+    dp = [[0] * (len_s1 + 1) for _ in range(len_s2 + 1)]
 
-    current_row = range(len_s1 + 1)
+    for i in range(len_s2 + 1):
+        dp[i][0] = i
+    for j in range(len_s1 + 1):
+        dp[0][j] = j
+
     for i in range(1, len_s2 + 1):
-        previous_row, current_row = current_row, [i] + [0] * len_s1
         for j in range(1, len_s1 + 1):
-            add, delete, change = previous_row[j] + 1, current_row[j-1] + 1, previous_row[j-1]
-            if s1[j-1] != s2[i-1]:
-                change += 1
-            current_row[j] = min(add, delete, change)
+            if s1[j - 1] == s2[i - 1]:
+                dp[i][j] = dp[i - 1][j - 1]
+            else:
+                dp[i][j] = min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]) + 1
 
-    return current_row[len_s1]
+    return dp[len_s2][len_s1]
 
+# Spell check function using Wagner-Fischer algorithm
 def spell_check(word, dictionary):
     suggestions = []
 
@@ -104,9 +102,8 @@ def spell_check(word, dictionary):
 
     suggestions.sort(key=lambda x: x[1])
     return suggestions[:10]
+
 dictionary = load_dictionary("words.txt")
-tk_window = Tk()
-tk_window.withdraw()
 
 # Define functions
 def on_submit():
@@ -122,16 +119,14 @@ def on_submit():
 def index():
     return render_template('index.html')
 
-@app.route('/spell_check', methods=['GET', 'POST'])
+@app.route('/spell_check', methods=['POST'])
 def spell_check_handler():
     if request.method == 'POST':
         # Handle the POST request
         output_text = on_submit()
         return output_text
-    else:
-        # Handle the GET request (if needed)
-        return render_template('spell_check.html')
 
 CORS(app)  # Enable CORS for all routes
+
 if __name__ == '__main__':
     app.run(debug=True)
