@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spell Checker</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <div class="container mt-5">
+      <h1 class="mb-4">Spell Checker</h1>
+      <form id="spellCheckForm" action="/spell_check" method="post">
+        <div class="form-group">
+          <label for="word">Enter a word:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="word"
+            name="word"
+            required
+          />
+        </div>
+        <button type="submit" class="btn btn-primary">Check Spelling</button>
+      </form>
+      <div class="mt-4">
+        <h3>Suggestions:</h3>
+        <textarea id="output" class="form-control" rows="5" readonly></textarea>
+      </div>
+    </div>
+
+    <!-- Include jQuery from CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Include Bootstrap JS (optional, if you're using Bootstrap) -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $("#spellCheckForm").submit(function (event) {
+          event.preventDefault();
+          var formData = $(this).serialize();
+          $.post("/spell_check", formData, function (data) {
+            $("#output").val(data);
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
