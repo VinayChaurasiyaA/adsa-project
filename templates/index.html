@@ -12,6 +12,9 @@
   <body>
     <div class="container mt-5">
       <h1 class="mb-4">Spell Checker</h1>
+      <h2 class="mb-4 font-bold text-xl">
+        One place where all the Suggestions are showed
+      </h2>
       <form id="spellCheckForm" action="/spell_check" method="post">
         <div class="form-group">
           <label for="word">Enter a word:</label>
@@ -27,7 +30,12 @@
       </form>
       <div class="mt-4">
         <h3>Suggestions:</h3>
-        <textarea id="output" class="form-control" rows="5" readonly></textarea>
+        <textarea
+          id="output"
+          class="form-control"
+          rows="10"
+          readonly
+        ></textarea>
       </div>
     </div>
 

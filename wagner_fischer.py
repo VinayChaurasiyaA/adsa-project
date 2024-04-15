@@ -129,4 +129,76 @@ def spell_check_handler():
 CORS(app)  # Enable CORS for all routes
 
 if __name__ == '__main__':
+    from waitress import serve
+    serve(app, host="0.0.0.0", port=8080)
     app.run(debug=True)
+# from flask import Flask, render_template, request, jsonify
+# from flask_cors import CORS
+
+# app = Flask(__name__)
+
+# # Load dictionary
+# def load_dictionary(file_path):
+#     with open(file_path, 'r') as file:
+#         return [line.strip() for line in file]
+
+# # Wagner-Fischer algorithm with dynamic programming
+# def wagner_fischer(s1, s2):
+#     len_s1, len_s2 = len(s1), len(s2)
+#     dp = [[0] * (len_s1 + 1) for _ in range(len_s2 + 1)]
+
+#     for i in range(len_s2 + 1):
+#         dp[i][0] = i
+#     for j in range(len_s1 + 1):
+#         dp[0][j] = j
+
+#     for i in range(1, len_s2 + 1):
+#         for j in range(1, len_s1 + 1):
+#             if s1[j - 1] == s2[i - 1]:
+#                 dp[i][j] = dp[i - 1][j - 1]
+#             else:
+#                 dp[i][j] = min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]) + 1
+
+#     return dp[len_s2][len_s1]
+
+# # Spell check function using Wagner-Fischer algorithm
+# def spell_check(word, dictionary):
+#     suggestions = []
+
+#     for correct_word in dictionary:
+#         distance = wagner_fischer(word, correct_word)
+#         suggestions.append((correct_word, distance))
+
+#     suggestions.sort(key=lambda x: x[1])
+#     return suggestions[:10]
+
+# dictionary = load_dictionary("words.txt")
+
+# # Define function to process input sentence
+# def process_sentence(sentence):
+#     words = sentence.split()
+#     suggestions_map = {}
+#     for word in words:
+#         suggestions = spell_check(word, dictionary)
+#         suggestions_map[word] = suggestions
+
+#     return suggestions_map
+
+# # Routes
+# @app.route('/')
+# def index():
+#     return render_template('index.html')
+
+# @app.route('/spell_check', methods=['POST'])
+# def spell_check_handler():
+#     if request.method == 'POST':
+#         input_sentence = request.form.get('sentence')
+#         if not input_sentence:
+#             return jsonify(error="No sentence provided in the request"), 400
+#         suggestions_map = process_sentence(input_sentence)
+#         return jsonify(suggestions_map)
+
+# CORS(app)  # Enable CORS for all routes
+
+# if __name__ == '__main__':
+#     app.run(debug=True)
